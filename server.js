@@ -4,13 +4,12 @@ const mongoose = require("mongoose");
 
 const Cors = require("cors");
 
-const path = require("path")
+// const path = require("path");
 
 const helmet = require("helmet");
 
 const morgan = require("morgan");
 const userRouter = require("./routes/userRoutes");
-require("dotenv").config();o
 
 require("dotenv").config();
 
@@ -40,7 +39,7 @@ app.use("/user", userRouter);
 
 
 //render image
-app.use("/upload",express.static(path.join(__dirname, "upload")));
+// app.use("/upload",express.static(path.join(__dirname, "upload")));
 
 mongoose.connect("mongodb://localhost:27017/B_M_P").then(()=>{
     console.log("database connected");

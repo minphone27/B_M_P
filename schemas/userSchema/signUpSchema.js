@@ -5,7 +5,7 @@ const signUpSchema = [
     body("email").isEmail().withMessage("Please fill your email"),
     body("password").isLength({min: 6}).withMessage("Password should be at least 6 characters"),
     body("confirmPassword").custom((value, {req})=>{
-        if(value !== req.password){
+        if(value !== req.body.password){
             throw new Error("Password should be match");
         }
         return true;

@@ -3,14 +3,14 @@ const fileUpload = require("../middlewares/fileUpload");
 const validateReq = require("../middlewares/validateReq");
 const signUpSchema = require("../schemas/userSchema/signUpSchema");
 
-const express = requir("express");
+const express = require("express");
 
 const router = express.Router();
 
 router.get("/",getAllUsers)
 router.get("/:id",getSingleUser);
 router.get("/mine",getMyProfile);
-router.post("/signUp", signUpSchema, validateReq, fileUpload.single("avatar"), UserSignUp);
+router.post("/signUp", fileUpload.single("avatar"), signUpSchema, validateReq, UserSignUp);
 router.post("/signIn",UserSignIn);
 router.post("/signOut",UserSignOut);
 router.put("/:id", UpdateUser);

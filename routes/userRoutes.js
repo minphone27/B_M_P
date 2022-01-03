@@ -3,7 +3,7 @@ const fileUpload = require("../middlewares/fileUpload");
 const validateReq = require("../middlewares/validateReq");
 const signUpSchema = require("../schemas/userSchema/signUpSchema");
 
-const express = requir("express");
+const express = require("express");
 
 const router = express.Router();
 

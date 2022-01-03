@@ -10,7 +10,6 @@ const helmet = require("helmet");
 
 const morgan = require("morgan");
 const userRouter = require("./routes/userRoutes");
-require("dotenv").config();o
 
 require("dotenv").config();
 

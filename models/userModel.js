@@ -29,16 +29,25 @@ const userSchema = new schema({
         required: true,
         default: false,
     },
-    role: {
-        
-    },
-    work: {
-
-    },
-    avatar: {
-        type: String,
-        required: true,
-    },
+    roles: [
+        {
+            role:{
+                type: String,
+            },
+        },
+    ],
+    works: [
+        {
+            work:{
+                type: String,
+            },
+        },
+    ],
+    
+    // avatar: {
+    //     type: String,
+    //     required: true,
+    // },
     tokens: [
         {
             token: {

@@ -10,7 +10,7 @@ const router = express.Router();
 router.get("/",getAllUsers)
 router.get("/:id",getSingleUser);
 router.get("/mine",getMyProfile);
-router.post("/signUp", signUpSchema, validateReq, fileUpload.single("avatar"), UserSignUp);
+router.post("/signUp", fileUpload.single("avatar"), signUpSchema, validateReq, UserSignUp);
 router.post("/signIn",UserSignIn);
 router.post("/signOut",UserSignOut);
 router.put("/:id", UpdateUser);

@@ -9,6 +9,8 @@ const path = require("path")
 const helmet = require("helmet");
 
 const morgan = require("morgan");
+const userRouter = require("./routes/userRoutes");
+require("dotenv").config();o
 
 require("dotenv").config();
 
@@ -34,7 +36,7 @@ app.use(morgan("tiny"));
 
 
 //Routes
-
+app.use("/user", userRouter);
 
 
 //render image

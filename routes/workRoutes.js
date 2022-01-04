@@ -9,14 +9,14 @@ router.get("/",getAllWorks);
 
 router.get("/:id",getOneWork);
 
-router.post("/",createWork);
+router.post("/",auth, adminMiddleWare,createWork);
 
-router.put("/:id",updateWork);
+router.put("/:id",auth, adminMiddleWare,updateWork);
 
-router.delete("/:id",deleteWork);
+router.delete("/:id",auth, adminMiddleWare,deleteWork);
 
 router.post("/:id",auth, adminMiddleWare,assignStaff);
 
-router.delete("/unassign_staff/:id",deleteStaff)
+router.delete("/unassign_staff/:id",auth, adminMiddleWare,deleteStaff);
 
 module.exports = router;

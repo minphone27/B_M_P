@@ -64,7 +64,7 @@ const deleteWork = async(req,res)=>{
         
         const workToDlete = await Work.findOneAndDelete(id);
         
-        res.status(200).send(work);
+        res.status(200).send(workToDlete);
 
     } catch (error) {
         res.status(500).send(error.message);
@@ -91,7 +91,25 @@ const assignStaff = async(req,res)=>{
 };
 
 const deleteStaff = async(req,res)=>{
+    const {id} = req.params;
+    const {staffId} = req.body;
+    try {
+        const work = await Work.findById(id);
+        const unassign_staff = await User.findById(staffId);
 
+        const unassign_staffIndex = work.assignedStaffs.indexOf(staffId);
+        work.assignedStaffs.splice(unassign_staffIndex,1);
+        await work.save();
+
+        const workIndex = unassign_staff.works.indexOf(id);
+        unassign_staff.works.splice(workIndex,1);
+        await unassign_staff.save();
+
+        res.status(200).send({work,unassign_staff});
+
+    } catch (error) {
+        res.status(500).send(error.message);       
+    }
 }
 
 module.exports = {getAllWorks,getOneWork,createWork,updateWork,deleteWork,assignStaff,deleteStaff}

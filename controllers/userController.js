@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const fs = require("fs");
 const config = require("../config");
 const User = require("../models/userModel");
+const Work = require("../models/workModel");
 const generateToken = require("../utils/generateToken");
 const transporter = require("../utils/mail");
 
@@ -171,4 +172,45 @@ const DeleteUser = async (req, res)=>{
     }
 };
 
-module.exports = {getAllUsers, getSingleUser, getMyProfile,UserSignUp, UserSignIn, UserSignOut, UserSignOut, UpdateUser, DeleteUser};
+const assignWork = async (req,res)=>{
+    const {id} = req.params;
+    const {workId} = req.body;
+    try {
+        const staff = await User.findById(id);
+        staff.works.push(workId);
+        await staff.save();
+
+        const work = await Work.findById(workId);
+        work.assignedStaffs.push(id);
+        await work.save();
+
+        res.status(200).send(staff);
+
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+}
+
+const unassignWork = async(req,res)=>{
+    const {id} = req.params;
+    const {workId} = req.body;
+    try {
+        const staff = await User.findById(id);
+        const unassign_work = await Work.findById(workId);
+
+        const unassign_workIndex = staff.works.indexOf(workId);
+        staff.works.splice(unassign_workIndex,1);
+        await staff.save();
+
+        const staffIndex = unassign_work.assignedStaffs.indexOf(id);
+        unassign_work.assignedStaffs.splice(staffIndex,1);
+        await unassign_work.save();
+
+        res.status(200).send({staff,unassign_work});
+
+    } catch (error) {
+        res.status(500).send(error.message);       
+    }
+}
+
+module.exports = {getAllUsers, getSingleUser, getMyProfile,UserSignUp, UserSignIn, UserSignOut, UserSignOut, UpdateUser, DeleteUser,assignWork,unassignWork};

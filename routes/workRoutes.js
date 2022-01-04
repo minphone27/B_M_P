@@ -1,5 +1,7 @@
 const express = require("express");
-const { getAllWorks, getOneWork, createWork, updateWork, deleteWork, assignStaff } = require("../controllers/workControllers");
+const { getAllWorks, getOneWork, createWork, updateWork, deleteWork, assignStaff, deleteStaff } = require("../controllers/workControllers");
+const adminMiddleWare = require("../middlewares/admin");
+const auth = require("../middlewares/authentication");
 
 const router = express.Router();
 
@@ -13,6 +15,8 @@ router.put("/:id",updateWork);
 
 router.delete("/:id",deleteWork);
 
-router.post("/:id",assignStaff);
+router.post("/:id",auth, adminMiddleWare,assignStaff);
+
+router.delete("/unassign_staff/:id",deleteStaff)
 
 module.exports = router;

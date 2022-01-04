@@ -1,9 +1,11 @@
 const Work = require("../models/workModel");
+const User = require("../models/userModel");
+
 
 const getAllWorks = async(req,res)=>{
     try {
         
-        const works = await Work.find();
+        const works = await Work.find().populate("assignedStaffs");
         res.status(200).send(works)
 
     } catch (error) {
@@ -15,7 +17,7 @@ const getOneWork = async(req,res)=>{
     const {id} = req.params;
     try {
         
-        const work = await Work.findById({_id:id});
+        const work = await Work.findById({_id:id}).populate("assignedStaffs");
         res.status(200).send(work);
 
     } catch (error) {
@@ -60,7 +62,8 @@ const deleteWork = async(req,res)=>{
     const {id} = req.params;
     try {
         
-        const work = await Work.findOneAndDelete(id);
+        const workToDlete = await Work.findOneAndDelete(id);
+        
         res.status(200).send(work);
 
     } catch (error) {
@@ -73,9 +76,13 @@ const assignStaff = async(req,res)=>{
     const {staffId} = req.body;
     try {
         const work = await Work.findById({_id:id});
-        console.log(work)
         work.assignedStaffs.push(staffId)
         await work.save();
+
+        const staff = await User.findById(staffId);
+        staff.works.push(work._id)
+        await staff.save();
+
         res.status(200).send(work);
         
     } catch (error) {
@@ -83,4 +90,8 @@ const assignStaff = async(req,res)=>{
     }
 };
 
-module.exports = {getAllWorks,getOneWork,createWork,updateWork,deleteWork,assignStaff}
+const deleteStaff = async(req,res)=>{
+
+}
+
+module.exports = {getAllWorks,getOneWork,createWork,updateWork,deleteWork,assignStaff,deleteStaff}

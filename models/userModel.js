@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 
-const schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-const userSchema = new schema({
+const userSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -29,6 +29,7 @@ const userSchema = new schema({
         required: true,
         default: false,
     },
+
     roles: [
         {
             role:{
@@ -36,18 +37,20 @@ const userSchema = new schema({
             },
         },
     ],
+
     works: [
         {
             work:{
-                type: String,
+                type:Schema.Types.ObjectId,
+                ref:"Work",
             },
         },
     ],
     
-    // avatar: {
-    //     type: String,
-    //     required: true,
-    // },
+    avatar: {
+        type: String,
+        required: true,
+    },
     tokens: [
         {
             token: {

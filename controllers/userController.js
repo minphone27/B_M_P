@@ -7,7 +7,7 @@ const transporter = require("../utils/mail");
 
 const getAllUsers = async (req, res)=>{
     try {
-        const users = await User.find();
+        const users = await User.find().populate("works");
         res.send(users);
     } catch (error) {
         res.status(500);
@@ -86,7 +86,7 @@ const UserSignIn = async (req, res)=>{
     try {
         const user = await User.findOne({ email : req.body.email});
         if(user){
-            const samePw = await bcrypt.compare(String(req.bosy.password), user.password);
+            const samePw = await bcrypt.compare(String(req.body.password), user.password);
             if(samePw){
                 const token = await generateToken(user);
                 res.send({

@@ -11,7 +11,7 @@ const signUpSchema = [
         return true;
     }),
     body("age").isNumeric().withMessage("Please fill your age"),
-    body("address").exists({ chechFalsy: true}).withMessage("Please fill your address"),
+    body("address").exists({ checkFalsy: true}).withMessage("Please fill your address"),
 ];
 
 module.exports = signUpSchema;

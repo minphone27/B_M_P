@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const fs = require("fs");
 const config = require("../config");
+const Role = require("../models/roleModel");
 const User = require("../models/userModel");
 const generateToken = require("../utils/generateToken");
 const transporter = require("../utils/mail");
@@ -171,4 +172,23 @@ const DeleteUser = async (req, res)=>{
     }
 };
 
-module.exports = {getAllUsers, getSingleUser, getMyProfile,UserSignUp, UserSignIn, UserSignOut, UserSignOut, UpdateUser, DeleteUser};
+const assignRole = async(req,res)=>{
+    const {id} = req.params;
+    const {roleId} = req.body;
+    try {
+        const role = await Role.findById({_id:roleId});
+        role.assignedStaffs.push(id);
+        await role.save();
+
+        const staff = await User.findById(id);
+        staff.roles.push(role._id)
+        await staff.save();
+
+        res.status(200).send(role);
+        
+    } catch (error) {
+        res.status(500).send(error.message);       
+    }
+};
+
+module.exports = {getAllUsers, getSingleUser, getMyProfile,UserSignUp, UserSignIn, UserSignOut, UserSignOut, UpdateUser, DeleteUser, assignRole};

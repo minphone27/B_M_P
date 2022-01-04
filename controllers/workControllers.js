@@ -94,4 +94,4 @@ const deleteStaff = async(req,res)=>{
 
 }
 
-module.exports = {getAllWorks,getOneWork,createWork,updateWork,deleteWork,assignStaff,deleteStaff}
+module.exports = {getAllWorks,getOneWork,createWork,updateWork,deleteWork,assignStaff,deleteStaff};

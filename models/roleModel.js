@@ -17,7 +17,8 @@ const roleScehma = new Schema({
     assignedStaffs:[{
 
         assignedStaff:{
-            type:String,
+            type:Schema.Types.ObjectId,
+            ref:"User",
         },
 
     }]

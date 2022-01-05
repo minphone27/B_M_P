@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const fs = require("fs");
 const config = require("../config");
+const Role = require("../models/roleModel");
 const User = require("../models/userModel");
 const Work = require("../models/workModel");
 const generateToken = require("../utils/generateToken");
@@ -62,6 +63,7 @@ const UserSignUp = async (req, res)=>{
             text : `Hey ${user.name}. Enjoy our app`,
         };
         transporter.sendMail(mailOptions, (err, info)=>{
+            console.log("here");
             if(err){
                 console.log(err);
                 return;
@@ -172,6 +174,42 @@ const DeleteUser = async (req, res)=>{
     }
 };
 
+const assignRole = async(req,res)=>{
+    const {id} = req.params;
+    const {roleId} = req.body;
+    try {
+        const role = await Role.findById({_id:roleId});
+        role.assignedStaffs.push(id);
+        await role.save();
+
+        const staff = await User.findById(id);
+        staff.roles.push(role._id)
+        await staff.save();
+
+        res.status(200).send(role);
+        
+    } catch (error) {
+        res.status(500).send(error.message);       
+    }
+};
+
+const unassignRole = async(req, res)=>{
+    const {id} = req.params;
+    const {roleId} = req.body;
+    try {
+        const staff = await User.findById(id);
+        const unassign_role = await Role.findById(roleId);
+
+        const unassign_roleIndex = staff.roles.indexOf(roleId);
+        staff.roles.splice(unassign_roleIndex, 1);
+        await unassign_role.save();
+
+        res.status(200).send({staff, unassign_role});
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+}
+
 const assignWork = async (req,res)=>{
     const {id} = req.params;
     const {workId} = req.body;
@@ -213,4 +251,18 @@ const unassignWork = async(req,res)=>{
     }
 }
 
-module.exports = {getAllUsers, getSingleUser, getMyProfile,UserSignUp, UserSignIn, UserSignOut, UserSignOut, UpdateUser, DeleteUser,assignWork,unassignWork};
+module.exports = {
+    getAllUsers, 
+    getSingleUser, 
+    getMyProfile,
+    UserSignUp, 
+    UserSignIn, 
+    UserSignOut, 
+    UserSignOut, 
+    UpdateUser, 
+    DeleteUser,
+    assignRole,
+    unassignRole,
+    assignWork,
+    unassignWork
+};

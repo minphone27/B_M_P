@@ -83,6 +83,7 @@ const assignStaff = async(req,res)=>{
     const {staffId} = req.body;
     try {
         const work = await Work.findById({_id:id});
+        // console.log(work);
         work.assignedStaffs.push(staffId)
         await work.save();
 
@@ -119,4 +120,4 @@ const deleteStaff = async(req,res)=>{
     }
 }
 
-module.exports = {getAllWorks,getOneWork,createWork,updateWork,deleteWork,assignStaff,deleteStaff}
+module.exports = {getAllWorks,getOneWork,createWork,updateWork,deleteWork,assignStaff,deleteStaff};

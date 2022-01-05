@@ -113,4 +113,19 @@ const deleteStaff = async(req,res)=>{
     }
 }
 
-module.exports = {getAllWorks,getOneWork,createWork,updateWork,deleteWork,assignStaff,deleteStaff};
+
+const togglePublic = async(req, res)=>{
+    try {
+        const {id} = req.params;
+        const workId = req.works._id;
+
+        const workToEdit = await Work.findOne({ _id: id, works: workId});
+        workToEdit.public = !workToEdit.public;
+        const work = await workToEdit.save();
+        res.seend(work);
+    } catch (error) {
+        res.sendStatus(500);
+    }
+}
+
+module.exports = {getAllWorks,getOneWork,createWork,updateWork,deleteWork,assignStaff,deleteStaff, togglePublic};

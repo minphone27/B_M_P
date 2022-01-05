@@ -1,4 +1,5 @@
 const Role = require("../models/roleModel");
+const User = require("../models/userModel");
 
 const getAllRoles = async(req,res)=>{
     try {
@@ -59,8 +60,16 @@ const deleteRole = async(req,res)=>{
     const {id} = req.params;
     try {
         
-        const role = await Role.findOneAndDelete(id);
-        res.status(200).send(role);
+        const roleToDelete = await Role.findByIdAndDelete(id);
+        
+        roleToDelete.assignedStaffs.forEach( async(id) => {
+           const user =  await User.findById(id);
+           const roleIndex = user.roles.indexOf(roleToDelete._id);
+           user.roles.splice(roleIndex,1)
+           await user.save();
+        });
+        
+        res.status(200).send("deleted");
 
     } catch (error) {
         res.status(500).send(error.message);

@@ -62,9 +62,16 @@ const deleteWork = async(req,res)=>{
     const {id} = req.params;
     try {
         
-        const workToDlete = await Work.findOneAndDelete(id);
+        const workToDlete = await Work.findByIdAndDelete(id);
         
-        res.status(200).send(workToDlete);
+        workToDlete.assignedStaffs.forEach( async(id) => {
+           const user =  await User.findById(id);
+           const workIndex = user.works.indexOf(workToDlete._id);
+           user.works.splice(workIndex,1)
+           await user.save();
+        });
+        
+        res.status(200).send("deleted");
 
     } catch (error) {
         res.status(500).send(error.message);

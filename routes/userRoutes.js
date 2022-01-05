@@ -1,4 +1,4 @@
-const { getAllUsers, getSingleUser, getMyProfile, UserSignUp, UserSignIn, UserSignOut, UpdateUser, DeleteUser, assignRole } = require("../controllers/userController");
+const { getAllUsers, getSingleUser, getMyProfile, UserSignUp, UserSignIn, UserSignOut, UpdateUser, DeleteUser, assignWork, unassignWork, assignRole, unassignRole } = require("../controllers/userController");
 const fileUpload = require("../middlewares/fileUpload");
 const validateReq = require("../middlewares/validateReq");
 const signUpSchema = require("../schemas/userSchema/signUpSchema");
@@ -19,6 +19,9 @@ router.post("/signIn", signInSchema, validateReq, UserSignIn);
 router.post("/signOut", auth, UserSignOut);
 router.put("/", auth, fileUpload.single("avatar"), updateSchema, validateReq, UpdateUser);
 router.delete("/", auth, DeleteUser);
-router.post("/:id", auth, adminMiddleWare, assignRole);
+router.post("/:id",assignRole);
+router.delete("/unassign_role/:id", unassignRole);
+router.post("/:id",assignWork);
+router.delete("/unassign_work/:id",unassignWork);
 
 module.exports = router;

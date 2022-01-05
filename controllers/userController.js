@@ -3,6 +3,7 @@ const fs = require("fs");
 const config = require("../config");
 const Role = require("../models/roleModel");
 const User = require("../models/userModel");
+const Work = require("../models/workModel");
 const generateToken = require("../utils/generateToken");
 const transporter = require("../utils/mail");
 
@@ -62,6 +63,7 @@ const UserSignUp = async (req, res)=>{
             text : `Hey ${user.name}. Enjoy our app`,
         };
         transporter.sendMail(mailOptions, (err, info)=>{
+            console.log("here");
             if(err){
                 console.log(err);
                 return;
@@ -191,4 +193,76 @@ const assignRole = async(req,res)=>{
     }
 };
 
-module.exports = {getAllUsers, getSingleUser, getMyProfile,UserSignUp, UserSignIn, UserSignOut, UserSignOut, UpdateUser, DeleteUser, assignRole};
+const unassignRole = async(req, res)=>{
+    const {id} = req.params;
+    const {roleId} = req.body;
+    try {
+        const staff = await User.findById(id);
+        const unassign_role = await Role.findById(roleId);
+
+        const unassign_roleIndex = staff.roles.indexOf(roleId);
+        staff.roles.splice(unassign_roleIndex, 1);
+        await unassign_role.save();
+
+        res.status(200).send({staff, unassign_role});
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+}
+
+const assignWork = async (req,res)=>{
+    const {id} = req.params;
+    const {workId} = req.body;
+    try {
+        const staff = await User.findById(id);
+        staff.works.push(workId);
+        await staff.save();
+
+        const work = await Work.findById(workId);
+        work.assignedStaffs.push(id);
+        await work.save();
+
+        res.status(200).send(staff);
+
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+}
+
+const unassignWork = async(req,res)=>{
+    const {id} = req.params;
+    const {workId} = req.body;
+    try {
+        const staff = await User.findById(id);
+        const unassign_work = await Work.findById(workId);
+
+        const unassign_workIndex = staff.works.indexOf(workId);
+        staff.works.splice(unassign_workIndex,1);
+        await staff.save();
+
+        const staffIndex = unassign_work.assignedStaffs.indexOf(id);
+        unassign_work.assignedStaffs.splice(staffIndex,1);
+        await unassign_work.save();
+
+        res.status(200).send({staff,unassign_work});
+
+    } catch (error) {
+        res.status(500).send(error.message);       
+    }
+}
+
+module.exports = {
+    getAllUsers, 
+    getSingleUser, 
+    getMyProfile,
+    UserSignUp, 
+    UserSignIn, 
+    UserSignOut, 
+    UserSignOut, 
+    UpdateUser, 
+    DeleteUser,
+    assignRole,
+    unassignRole,
+    assignWork,
+    unassignWork
+};

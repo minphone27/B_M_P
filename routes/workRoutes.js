@@ -1,5 +1,5 @@
 const express = require("express");
-const { getAllWorks, getOneWork, createWork, updateWork, deleteWork, assignStaff, deleteStaff, togglePublic } = require("../controllers/workControllers");
+const { getAllWorks, getOneWork, createWork, updateWork, deleteWork, assignStaff, deleteStaff } = require("../controllers/workControllers");
 const adminMiddleWare = require("../middlewares/admin");
 const auth = require("../middlewares/authentication");
 
@@ -18,7 +18,5 @@ router.delete("/:id",auth, adminMiddleWare,deleteWork);
 router.post("/:id",auth, adminMiddleWare,assignStaff);
 
 router.delete("/unassign_staff/:id",auth, adminMiddleWare,deleteStaff);
-
-router.put("/public/:id", auth, togglePublic);
 
 module.exports = router;

@@ -19,12 +19,6 @@ const workScehma = new Schema({
         default:null,
     },
 
-    public: {
-        type: Boolean,
-        required: true,
-        default: true,
-    },
-
     assignedStaffs:[{
 
         assignedStaff:{

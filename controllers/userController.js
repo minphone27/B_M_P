@@ -268,6 +268,20 @@ const unassignWork = async(req,res)=>{
     }
 }
 
+const togglePublic = async(req, res)=>{
+    try {
+        const {id} = req.params;
+        // const userId = req.user._id;
+
+        const adminToEdit = await User.findOne({ _id: id});//user: userId
+        adminToEdit.isAdmin = !adminToEdit.isAdmin;
+        const admin = await adminToEdit.save();
+        res.send(admin);
+    } catch (error) {
+        res.sendStatus(500);
+    }
+}
+
 module.exports = {
     getAllUsers, 
     getSingleUser, 
@@ -281,5 +295,6 @@ module.exports = {
     assignRole,
     unassignRole,
     assignWork,
-    unassignWork
+    unassignWork,
+    togglePublic
 };

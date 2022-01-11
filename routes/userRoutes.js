@@ -32,8 +32,12 @@ router.post("/signUp", fileUpload.single("avatar"), signUpSchema, validateReq, U
 router.post("/signIn", signInSchema, validateReq, UserSignIn);
 router.post("/signOut", auth, UserSignOut);
 router.put("/", auth, fileUpload.single("avatar"), updateSchema, validateReq, UpdateUser);
+<<<<<<< HEAD
 router.put("/changePw", changePwSchema, validateReq, auth, changePw );
 router.delete("/", auth, DeleteUser);
+=======
+router.delete("/:id", auth, DeleteUser);
+>>>>>>> 16a120f5bf42a538feb30a2f5643907d53c5c62a
 router.post("/:id",assignRole);
 router.delete("/unassign_role/:id", unassignRole);
 router.post("/:id",assignWork);

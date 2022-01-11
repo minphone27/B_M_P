@@ -203,13 +203,26 @@ const changePw = async(req, res)=>{
 };
 
 const DeleteUser = async (req, res)=>{
+    const {id} = req.params;
     try {
-        const user = await User.findById(req.user._id);
+        const deletedUser = await User.findByIdAndDelete(id);
+        fs.unlinkSync(deletedUser.avatar);
         
-        fs.unlinkSync(user.avatar);
-        const deletedUser = await user.remove();
+        deletedUser.roles.forEach( async(id) => {
+           const role =  await Role.findById(id);
+           const userIndex = role.assignedStaffs.indexOf(deletedUser._id);
+           role.assignedStaffs.splice(userIndex,1)
+           await role.save();
+        });
 
-        res.status(200);
+        deletedUser.works.forEach( async(id) => {
+            const work =  await Work.findById(id);
+            const userIndex = work.assignedStaffs.indexOf(deletedUser._id);
+            work.assignedStaffs.splice(userIndex,1)
+            await work.save();
+         });
+
+        res.status(200).send("deleted user");
     } catch (error) {
         res.sendStatus(500);
     }
@@ -241,11 +254,15 @@ const unassignRole = async(req, res)=>{
         const staff = await User.findById(id);
         const unassign_role = await Role.findById(roleId);
 
-        const unassign_roleIndex = staff.roles.indexOf(roleId);
+        const unassign_roleIndex = staff.roles.indexOf(unassign_role._id);
         staff.roles.splice(unassign_roleIndex, 1);
+        await staff.save();
+
+        const staffIndex = unassign_role.assignedStaffs.indexOf(staff._id);
+        unassign_role.assignedStaffs.splice(staffIndex,1);
         await unassign_role.save();
 
-        res.status(200).send({staff, unassign_role});
+        res.status(200).send(staff);
     } catch (error) {
         res.status(500).send(error.message);
     }

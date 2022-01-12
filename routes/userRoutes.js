@@ -1,4 +1,4 @@
-const { getAllUsers, getSingleUser, getMyProfile, UserSignUp, UserSignIn, UserSignOut, UpdateUser, DeleteUser, assignWork, unassignWork, assignRole, unassignRole, togglePublic } = require("../controllers/userController");
+const { getAllUsers, getSingleUser, getMyProfile, UserSignUp, UserSignIn, UserSignOut, UpdateUser, DeleteUser, assignWork, unassignWork, assignRole, unassignRole, toggleAdmin } = require("../controllers/userController");
 const fileUpload = require("../middlewares/fileUpload");
 const validateReq = require("../middlewares/validateReq");
 const signUpSchema = require("../schemas/userSchema/signUpSchema");
@@ -18,11 +18,11 @@ router.post("/signUp", fileUpload.single("avatar"), signUpSchema, validateReq, U
 router.post("/signIn", signInSchema, validateReq, UserSignIn);
 router.post("/signOut", auth, UserSignOut);
 router.put("/", auth, fileUpload.single("avatar"), updateSchema, validateReq, UpdateUser);
-router.delete("/:id", auth, DeleteUser);
-router.post("/:id",assignRole);
-router.delete("/unassign_role/:id", unassignRole);
-router.post("/:id",assignWork);
-router.delete("/unassign_work/:id",unassignWork);
-router.put("/admin/:id", auth, togglePublic);
+router.delete("/:id", auth,adminMiddleWare, DeleteUser);
+router.post("/assign_role/:id", auth,adminMiddleWare,assignRole);
+router.delete("/unassign_role/:id", auth,adminMiddleWare,unassignRole);
+router.post("/assign_work/:id", auth,adminMiddleWare,assignWork);
+router.delete("/unassign_work/:id", auth,adminMiddleWare,unassignWork);
+router.put("/admin/:id", auth,adminMiddleWare, toggleAdmin);
 
 module.exports = router;

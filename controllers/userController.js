@@ -268,7 +268,7 @@ const unassignWork = async(req,res)=>{
     }
 }
 
-const togglePublic = async(req, res)=>{
+const toggleAdmin = async(req, res)=>{
     try {
         const {id} = req.params;
         // const userId = req.user._id;
@@ -296,5 +296,5 @@ module.exports = {
     unassignRole,
     assignWork,
     unassignWork,
-    togglePublic
+    toggleAdmin
 };

@@ -34,7 +34,6 @@ const getMyProfile = async (req, res)=>{
         age : req.user.age,
         address : req.user.address,
         avatar : req.user.avatar,
-        token,
     });
 };
 
@@ -136,7 +135,7 @@ const UpdateUser = async (req, res)=>{
             fs.unlinkSync(user.avatar);
         }
 
-        const updateDate = {
+        const updateData= {
             ...req.body, 
             password: user.password, 
             isAdmin: user.isAdmin, 
@@ -157,6 +156,48 @@ const UpdateUser = async (req, res)=>{
             avatar : updateuser.avatar,
         });
     } catch (error) {
+        res.sendStatus(500);
+    }
+};
+
+const changePw = async(req, res)=>{
+    try {
+        const user = await User.findById(req.user._id);
+
+        const samePw = await bcrypt.compare(String(req.body.prevPw), user.password);
+
+        if(!samePw){
+            res.status(400).send("Your previous password is wrong");
+            return;
+        }
+        const hashPw = await bcrypt.hash(req.body.newPw, 8);
+
+        const updateData= {
+            name: user.name,
+            email: user.email,
+            age: user.age,
+            address: user.address,
+            isAdmin: user.isAdmin,
+            avatar: user.avatar,
+            tokens: user.tokens,
+            password: hashPw,
+        };
+
+        const updateuser = await User.findByIdAndUpdate(req.user._id, updateData, {
+            new: true,
+        });
+
+        res.send({
+            _id : updateuser._id,
+            name : updateuser.name,
+            email : updateuser.email,
+            isAdmin : updateuser.isAdmin,
+            age : updateuser.age,
+            address : updateuser.address,
+            avatar : updateuser.avatar,
+        });
+    } catch (error) {
+        console.log(error);
         res.sendStatus(500);
     }
 };
@@ -271,9 +312,8 @@ const unassignWork = async(req,res)=>{
 const toggleAdmin = async(req, res)=>{
     try {
         const {id} = req.params;
-        // const userId = req.user._id;
 
-        const adminToEdit = await User.findOne({ _id: id});//user: userId
+        const adminToEdit = await User.findOne({ _id: id});
         adminToEdit.isAdmin = !adminToEdit.isAdmin;
         const admin = await adminToEdit.save();
         res.send(admin);
@@ -290,7 +330,8 @@ module.exports = {
     UserSignIn, 
     UserSignOut, 
     UserSignOut, 
-    UpdateUser, 
+    UpdateUser,
+    changePw,
     DeleteUser,
     assignRole,
     unassignRole,

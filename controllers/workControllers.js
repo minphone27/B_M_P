@@ -4,9 +4,19 @@ const User = require("../models/userModel");
 
 const getAllWorks = async(req,res)=>{
     try {
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+        const total = await Work.countDocuments();
+        const pages = Math.ceil(total / limit); 
+        // http://localhost:3000/work?page=1&&limit=5
+        if (page > pages){
+            res.status(404).send("There is no page with this number");
+            return;
+        }
         
-        const works = await Work.find().populate("assignedStaffs");
-        res.status(200).send(works)
+        const works = await Work.find().skip(skip).limit(limit).sort({ title: 1});
+        res.status(200).send({works, page, pages, totalWorks: total});
 
     } catch (error) {
         res.status(500).send(error.message)
@@ -16,9 +26,14 @@ const getAllWorks = async(req,res)=>{
 const getOneWork = async(req,res)=>{
     const {id} = req.params;
     try {
-        
-        const work = await Work.findById({_id:id}).populate("assignedStaffs");
-        res.status(200).send(work);
+        const {populate} = req.query;
+        if(populate){
+            const work = await Work.findById({_id:id}).populate("assignedStaffs");
+            res.status(200).send(work);
+        }else{
+            const work = await Work.findById({_id:id});
+            res.status(200).send(work);
+        }
 
     } catch (error) {
         res.status(500).send(error.message)

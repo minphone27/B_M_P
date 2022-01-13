@@ -5,9 +5,9 @@ const auth = require("../middlewares/authentication");
 
 const router = express.Router();
 
-router.get("/",getAllWorks);
+router.get("/", auth,getAllWorks);
 
-router.get("/:id",getOneWork);
+router.get("/:id", auth,getOneWork);
 
 router.post("/",auth, adminMiddleWare,createWork);
 

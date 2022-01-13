@@ -6,15 +6,15 @@ const auth = require("../middlewares/authentication");
 
 const router = express.Router();
 
-router.get("/",getAllRoles);
+router.get("/", auth,getAllRoles);
 
-router.get("/:id",getOneRole);
+router.get("/:id", auth,getOneRole);
 
 router.post("/",auth, adminMiddleWare,createRole);
 
 router.put("/:id",auth, adminMiddleWare,updateRole);
 
-router.delete("/:id",deleteRole);
+router.delete("/:id", auth,adminMiddleWare,deleteRole);
 
 router.post("/:id", auth, adminMiddleWare, assignRole);
 

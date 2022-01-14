@@ -32,7 +32,7 @@ router.post("/signUp", fileUpload.single("avatar"), signUpSchema, validateReq, U
 router.post("/signIn", signInSchema, validateReq, UserSignIn);
 router.post("/signOut", auth, UserSignOut);
 router.put("/", auth, fileUpload.single("avatar"), updateSchema, validateReq, UpdateUser);
-
+router.put("/changePw", changePwSchema, validateReq, auth, changePw );
 router.delete("/:id", auth,adminMiddleWare, DeleteUser);
 router.post("/assign_role/:id", auth,adminMiddleWare,assignRole);
 router.delete("/unassign_role/:id", auth,adminMiddleWare,unassignRole);

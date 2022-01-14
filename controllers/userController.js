@@ -9,8 +9,19 @@ const transporter = require("../utils/mail");
 
 const getAllUsers = async (req, res)=>{
     try {
-        const users = await User.find().populate("works");
-        res.send(users);
+        // const page = Nuumber(req.query.page) || 1;
+        // const limit = Number(req.query.limit) || 10;
+        // const skip = (page - 1) * limit;
+        // const total = await User.countDocuments();
+        // const pages = Math.ceil(total / limit);
+        // // http://localhost:3000/user?page=1&&limit=5
+        // if(page > pages){
+        //     res.status(404).send("There is no page with this number");
+        //     return;
+        // }
+
+        const users = await User.find().sort("name");
+        res.status(200).send(users);
     } catch (error) {
         res.status(500);
     }
@@ -18,8 +29,16 @@ const getAllUsers = async (req, res)=>{
 
 const getSingleUser = async (req, res)=>{
     try {
-        const user = await User.findById(req.params.id);
-        res.send(user);
+        // http://localhost:3000/user/:id?populate=true
+        const{populate}= req.query;
+        if(populate){
+            const user = await User.findById(req.params.id).populate("user");
+            res.send(user);
+        }else{
+            const user = await User.findById(req.params.id);
+            res.send(user);
+        }
+    
     } catch (error) {
         res.status(500);
     }
